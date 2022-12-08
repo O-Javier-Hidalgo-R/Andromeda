@@ -6,32 +6,21 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public class ActAlien extends Actor {
+public class ActAlien extends ActorBase {
 
-    private Texture texture;
-    private float velocidad = 200;
+    private ActBala bala;
 
-    public ActAlien(Texture texture){
-        this.texture = texture;
-        setSize(Gdx.graphics.getWidth()/16, Gdx.graphics.getHeight()/16);
-    }
-
-    public void moverDerecha(float delta){
-        if (getX() + getWidth() < Gdx.graphics.getWidth())
-            setX(getX() + delta * velocidad);
-        else
-            setX(Gdx.graphics.getWidth()-getWidth());
-    }
-
-    public void moverIzquierda(float delta){
-        if (getX() > 0)
-            setX(getX() - delta * velocidad);
-        else
-            setX(0);
+    public ActAlien(Texture textura, Float Velocidad, float x, float y, float ancho, float alto) {
+        super(textura, Velocidad, x, y, ancho, alto);
+        Texture texturaBala;
+        texturaBala = new Texture("bala.png");
+        setX(getX() - ancho/2);
+        setY(getY() - alto);
+        bala = new ActBala(texturaBala, 500f, -100,-100, ancho * 0.3f, alto * 2, this);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(texture, getX(), getY(), getWidth(), getHeight());
+        batch.draw(getTextura(), getX(), getY(), getWidth(), getHeight());
     }
 }

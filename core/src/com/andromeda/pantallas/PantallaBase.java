@@ -5,10 +5,10 @@ import com.badlogic.gdx.Screen;
 
 public abstract class PantallaBase implements Screen {
 
-    protected Videojuego juego;
+    protected Videojuego videojuego;
 
-    public PantallaBase(Videojuego juego){
-        this.juego = juego;
+    public PantallaBase(Videojuego videojuego){
+        this.videojuego = videojuego;
     }
 
     @Override

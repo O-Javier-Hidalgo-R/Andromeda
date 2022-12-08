@@ -6,26 +6,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public class ActBala extends Actor {
+public class ActBala extends ActorBase {
 
-    private float velocidad;
     private Actor disparador;
-    private Texture textura = new Texture("bala.png");
+    private boolean impacto;
 
-    public ActBala(Actor disparador, float velocidad){
-        setSize(Gdx.graphics.getWidth()/256, Gdx.graphics.getHeight()/16);
+    public ActBala(Texture textura, Float Velocidad,float x, float y, float ancho, float alto, Actor disparador) {
+        super(textura, Velocidad, x, y, ancho, alto);
         this.disparador = disparador;
-        this.velocidad = velocidad;
-        setY(Gdx.graphics.getHeight()+100);
-    }
-
-    @Override
-    public void act(float delta) {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)&&!estaDisparando()){
-            prepara();
-        }else{
-            mover(delta);
-        }
+        this.impacto = false;
     }
 
     private void prepara() {
@@ -40,12 +29,20 @@ public class ActBala extends Actor {
         return false;
     }
 
+    private void mover(float delta){
+        setY(getY() + delta * getVelocidad());
+    }
+
+    @Override
+    public void act(float delta) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !estaDisparando())
+            prepara();
+        mover(delta);
+        if(estaDisparando()) mover(delta);
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.draw(textura, getX(), getY(), getWidth(), getHeight());
-    }
-
-    private void mover(float delta){
-        setY(getY() + delta * velocidad);
     }
 }
