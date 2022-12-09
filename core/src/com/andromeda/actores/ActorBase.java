@@ -1,36 +1,35 @@
 package com.andromeda.actores;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public abstract class ActorBase extends Actor {
 
-    protected Texture textura;
-    protected Float Velocidad;
+    protected Sprite sprite;
 
-    public ActorBase(Texture textura, Float Velocidad, float x, float y, float ancho, float alto){
-        this.textura = textura;
-        this.Velocidad = Velocidad;
-        setSize(ancho, alto);
+    public ActorBase(Sprite sprite, float x, float y, float ancho, float alto){
         setPosition(x, y);
+        setSize(ancho, alto);
+        sprite.setSize(ancho, alto);
+        sprite.setPosition(x, y);
+        this.sprite = new Sprite(sprite);
     }
 
-
-    public void setTextura(Texture textura) {
-        this.textura = textura;
+    public Sprite getSprite(){
+        return sprite;
     }
 
-    public Texture getTextura() {
-        return textura;
+    public void setSprite(Sprite sprite){
+        this.sprite = sprite;
     }
 
-    public Float getVelocidad() {
-        return Velocidad;
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        //super.draw(batch, parentAlpha);
+        sprite.setPosition(getX(), getY());
+        sprite.draw(batch);
     }
-
-    public void setVelocidad(Float velocidad) {
-        Velocidad = velocidad;
-    }
-
 }

@@ -14,6 +14,6 @@ public class Videojuego extends Game {
 		pantallaInicio = new PantallaInicio(this);
 		pantallaJuego = new PantallaJuego(this);
 
-		setScreen(pantallaInicio);
+		setScreen(pantallaJuego);
 	}
 }

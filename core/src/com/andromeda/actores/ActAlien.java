@@ -1,26 +1,40 @@
 package com.andromeda.actores;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 
 public class ActAlien extends ActorBase {
 
-    private ActBala bala;
+    private boolean vivo;
+    private Vector2 posicionInicial;
 
-    public ActAlien(Texture textura, Float Velocidad, float x, float y, float ancho, float alto) {
-        super(textura, Velocidad, x, y, ancho, alto);
-        Texture texturaBala;
-        texturaBala = new Texture("bala.png");
-        setX(getX() - ancho/2);
-        setY(getY() - alto);
-        bala = new ActBala(texturaBala, 500f, -100,-100, ancho * 0.3f, alto * 2, this);
+    public ActAlien(Sprite sprite, float x, float y, float ancho, float alto) {
+        super(sprite, x, y, ancho, alto);
+        vivo = true;
+        posicionInicial = new Vector2(x, y);
+    }
+
+    public boolean isVivo() {
+        return vivo;
+    }
+
+    public void setVivo(boolean vivo) {
+        this.vivo = vivo;
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(getTextura(), getX(), getY(), getWidth(), getHeight());
+        if(isVivo()){
+            super.draw(batch, parentAlpha);
+        }
+    }
+
+    public Vector2 getPosicionInicial() {
+        return posicionInicial;
+    }
+
+    public void setPosicionInicial(Vector2 posicionInicial) {
+        this.posicionInicial = posicionInicial;
     }
 }
