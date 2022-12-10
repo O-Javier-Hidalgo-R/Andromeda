@@ -5,61 +5,76 @@ import com.andromeda.actores.ActAlien;
 import com.andromeda.actores.ActBala;
 import com.andromeda.actores.ActJugador;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public class PantallaJuego extends PantallaBase{
 
-    static TextureAtlas atlas = new TextureAtlas("spritesJuego.atlas");
+    private static final TextureAtlas atlas = new TextureAtlas("spritesJuego.atlas");
+    private static final float TAMAÑO_DEFAULT = 32;
+    private static final float MAXIMO_ALIENS_FILA = 8;
+    private static final float DISTANCIA = 100; // Distancia en el eje x donde se van colocando los aliens.
+    private static final float ALTURA = Gdx.graphics.getHeight() - 50; // Distancia en el eje y donde empiezan los aliens.
+    private static final float MARGEN_IZQUIERDO = 0; // Limite de los aliens a la izquierda.
+    private static final float MARGEN_DERECHO = Gdx.graphics.getWidth()+40; // Limite de los aliens a la derecha.
+    private static final short VELOCIDAD_DEFAULT = 400;
 
     private ActJugador jugador;
-    private ActAlien aliens[];
+    private ActBala balaJugador;
     private Stage escenario;
-
-    public int filaAliens = 5;
-    public int columnasAliens = 10;
-    public int espacioAliens = 50;
-    Vector2 desplazamientoAliens = Vector2.Zero;
-    int sentidoAliens = 1;
-    float speedAlien = 100;
-    private int minX_aliens;
-    private int minY_aliens;
-    private int MaxX_aliens;
-    private int MaxY_aliens;
-    private int amountAliveAliens= 1;
+    private Group groupAliens;
 
     public PantallaJuego(Videojuego videojuego) {
         super(videojuego);
-        ActBala bala = new ActBala(atlas.createSprite("balajugador"), -100, -100, 4f, 32f, 1000);
-        jugador = new ActJugador(atlas.createSprite("jugador"),0f, 0f, 32f, 32f, 450f, bala);
-        escenario = new Stage();
-        escenario.setDebugAll(true);
-
-        aliens = new ActAlien[filaAliens * columnasAliens];
-        int i = 0;
-
-        //creo a los aliens en un vector
-        for (int y = 0; y < filaAliens; y++){
-            for (int x = 0; x < columnasAliens; x++){
-                Vector2 position = new Vector2(x* espacioAliens, y* espacioAliens);
-                position.x += Gdx.graphics.getWidth()/2;
-                position.y += Gdx.graphics.getHeight();
-                position.x -= (columnasAliens /2) * espacioAliens;
-                position.y -= (filaAliens) * espacioAliens;
-                aliens[i] = new ActAlien(atlas.createSprite("alienA1"), position.x, position.y, 32,32);
-                escenario.addActor(aliens[i]);
-                i++;
-            }
-        }
     }
 
     @Override
     public void show() {
+        jugador = new ActJugador(atlas.createSprite("jugador"),  Gdx.graphics.getWidth()/2 - 16,0,TAMAÑO_DEFAULT,TAMAÑO_DEFAULT, VELOCIDAD_DEFAULT);
+        balaJugador = new ActBala(atlas.createSprite("balajugador"), 0, Gdx.graphics.getHeight(), TAMAÑO_DEFAULT/4, TAMAÑO_DEFAULT, (short) (VELOCIDAD_DEFAULT*2));
+        groupAliens = new Group();
+        escenario = new Stage();
+        crearAliens();
+        escenario.addActor(groupAliens);
         escenario.addActor(jugador);
+        escenario.addActor(balaJugador);
+    }
+
+    private void crearAliens() {
+        float altura = ALTURA;
+
+        posicionarAliens(escenario, atlas.createSprite("alienA1"), altura);
+        altura = recalcularAltura(altura);
+
+        posicionarAliens(escenario, atlas.createSprite("alienB1"), altura);
+        altura = recalcularAltura(altura);
+
+        posicionarAliens(escenario, atlas.createSprite("alienC1"), altura);
+        altura = recalcularAltura(altura);
+
+        posicionarAliens(escenario, atlas.createSprite("alienD1"), altura);
+
+    }
+
+    private float recalcularAltura(float altura) {
+        return altura - TAMAÑO_DEFAULT -5;
+    }
+
+    private void posicionarAliens(Stage stage, Sprite sprite, float altura) {
+        float distancia = DISTANCIA;
+        float limiteDerecha = MARGEN_DERECHO - ((TAMAÑO_DEFAULT + 5) * MAXIMO_ALIENS_FILA);
+        float limiteIzquierda = MARGEN_IZQUIERDO;
+        for(int i = 0; i < MAXIMO_ALIENS_FILA ; i++) {
+            groupAliens.addActor(new ActAlien(sprite, distancia, altura, TAMAÑO_DEFAULT, TAMAÑO_DEFAULT,limiteIzquierda, limiteDerecha, (short) (VELOCIDAD_DEFAULT/2)));
+            distancia = distancia + TAMAÑO_DEFAULT + 5;
+            limiteDerecha = limiteDerecha + TAMAÑO_DEFAULT + 5;
+            limiteIzquierda = limiteIzquierda + TAMAÑO_DEFAULT + 5;
+        }
     }
 
     @Override
@@ -74,82 +89,65 @@ public class PantallaJuego extends PantallaBase{
 
         escenario.act();
 
-        //COMPROBAMOS LOS IMPACTOS DE BALA PLAYER - ALIENS
-        for (int i = 0; i<aliens.length; i++){
-            if (aliens[i].isVivo()){
-                Rectangle rectangle1 = new Rectangle(jugador.getBala().getSprite().getBoundingRectangle());
-                Rectangle rectangle2 = new Rectangle(aliens[i].getSprite().getBoundingRectangle());
-                if (rectangle1.overlaps(rectangle2)){
-                    jugador.getBala().setY(-100);
-                    aliens[i].setVivo(false);
-                    break;
-                }
-            }
-        }
+        //TRASLADAR AL CONTROLADOR
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) dispararPlayer();
 
-        //COMPROBAMOS LA FORMACION
-        minX_aliens = 10000;
-        minY_aliens = 10000;
-        MaxX_aliens = 0;
-        MaxY_aliens = 0;
-        amountAliveAliens = 0;
+        comprobarImpactosBalas();
 
-        for (int i = 0; i < aliens.length; i++){
-            if (aliens[i].isVivo()){
-                int indexX = i % columnasAliens;
-                int indexY = i / columnasAliens;
-                if(indexX > MaxX_aliens) MaxX_aliens = indexX;
-                if(indexX < minX_aliens) minX_aliens = indexX;
-                if(indexY > MaxY_aliens) MaxY_aliens = indexY;
-                if(indexY < minY_aliens) minY_aliens = indexY;
-                amountAliveAliens++;
-            }
-        }
+        comprobarFinJuego();
+        comprobarFinJuego1();
 
-        if (amountAliveAliens == 0){
-            System.out.println("USTED GANA");
-        }
-
-        desplazamientoAliens.x += sentidoAliens *delta*speedAlien;
-        //MOVIMIENTO A LOS LATERALES
-        for (int i = 0; i < aliens.length; i++){
-            Vector2 vector2 = new Vector2(aliens[i].getPosicionInicial().x + desplazamientoAliens.x, aliens[i].getPosicionInicial().y + desplazamientoAliens.y);
-            aliens[i].setPosition(vector2.x, vector2.y);
-            if (aliens[i].isVivo()){
-                if (aliens[i].getSprite().getBoundingRectangle().overlaps(jugador.getSprite().getBoundingRectangle())){
-                    Gdx.app.exit();
-                }
-            }
-        }
-
-        //MOVIMIENTO HACIA ABAJO
-        if (aliens[MaxX_aliens].getX() >= Gdx.graphics.getWidth()){
-            sentidoAliens = -1;
-            //BAJA CUANDO LLEGA AL LIMITE
-            desplazamientoAliens.y -= aliens[0].getHeight()*aliens[0].getScaleY()*0.25f;
-            //ACELERAN CADA QUE BAJAN
-            speedAlien+=5;
-        }
-        if (aliens[minX_aliens].getX() <= 0){
-            sentidoAliens = 1;
-            //BAJA CUANDO LLEGA AL LIMITE
-            desplazamientoAliens.y -= aliens[0].getHeight()*aliens[0].getSprite().getScaleY()*0.25f;
-            //ACELERAN CADA QUE BAJAN
-            speedAlien+=5;
-        }
-
-        //COMPRUEBA SI UN ALIEN LLEGO ABAJO
-        if (aliens[minY_aliens].getY() <= 0){
-            Gdx.app.exit();
-        }
+        compobarGanador();
 
         escenario.draw();
+    }
+
+    private void comprobarFinJuego1() {
+        boolean touchable = false;
+        Actor impactado = groupAliens.hit(jugador.getX(), jugador.getY() + jugador.getHeight(), touchable);
+        if(impactado != null){
+            jugador.remove();
+        }
+    }
+
+    private void compobarGanador() {
+        if(groupAliens.getChildren().isEmpty()){
+            //COLOCAR PANTALLA DE GANADOR
+            System.out.println("USTED GANA");
+        }
+    }
+
+    private void comprobarFinJuego() {
+        for (Actor alien: groupAliens.getChildren()) {
+            if(alien.getY() < 0){
+                //COLOCAR PANTALLA DE PERDEDOR (OPCION DE VOLVER A INTENTAR)
+                System.out.println("GAME OVER");
+            }
+        }
+    }
+
+    public void dispararPlayer() {
+        if (!balaJugador.enPantalla()){
+            balaJugador.setY(jugador.getY());
+            balaJugador.setX(jugador.getX() + (jugador.getWidth()/2 - balaJugador.getWidth()/2));
+        }
+    }
+
+    private void comprobarImpactosBalas(){
+        boolean touchable = false;
+        Actor alienImpactado = groupAliens.hit(balaJugador.getX(), balaJugador.getY(), touchable);
+        if(alienImpactado != null){
+            alienImpactado.remove();
+            balaJugador.desaparecer();
+        }
     }
 
     @Override
     public void dispose() {
         jugador.clear();
         escenario.dispose();
+        groupAliens.clear();
+        balaJugador.clear();
     }
 
 }

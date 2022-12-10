@@ -1,40 +1,53 @@
 package com.andromeda.actores;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Rectangle;
 
 public class ActAlien extends ActorBase {
 
-    private boolean vivo;
-    private Vector2 posicionInicial;
+    //private final float DES_SPEED = 300; //Se usa si se quiere una caida mas constante
 
-    public ActAlien(Sprite sprite, float x, float y, float ancho, float alto) {
-        super(sprite, x, y, ancho, alto);
-        vivo = true;
-        posicionInicial = new Vector2(x, y);
-    }
+    private byte movimiento;
+    private short margenIzquierdo;
+    private short margenDerecho;
+    private short velocidad;
 
-    public boolean isVivo() {
-        return vivo;
-    }
-
-    public void setVivo(boolean vivo) {
-        this.vivo = vivo;
+    public ActAlien(Sprite sprite, float x, float y, float ancho, float alto, float margenIzquierdo, float margenDerecho, short velocidad) {
+        super(sprite, x, y, ancho, alto, velocidad);
+        movimiento = 1;
+        this.margenIzquierdo = (short) margenIzquierdo;
+        this.margenDerecho = (short) margenDerecho;
+        this.velocidad = (short) velocidad;
     }
 
     @Override
-    public void draw(Batch batch, float parentAlpha) {
-        if(isVivo()){
-            super.draw(batch, parentAlpha);
+    public void act(float delta) {
+        moverEnX(delta);
+        if(tocoUnLimite()){
+            cambiarSentido();
+            moverEnY(delta);
+            acelerar();
         }
     }
 
-    public Vector2 getPosicionInicial() {
-        return posicionInicial;
+    private void acelerar() {
+        velocidad += 10;
     }
 
-    public void setPosicionInicial(Vector2 posicionInicial) {
-        this.posicionInicial = posicionInicial;
+    private void moverEnY(float delta) {
+        setY(getY() - velocidad * delta);
     }
+
+    private void cambiarSentido() {
+        movimiento *= -1;
+    }
+
+    private boolean tocoUnLimite() {
+        return getX() + getWidth() > margenDerecho || getX() < margenIzquierdo;
+    }
+
+    private void moverEnX(float delta) {
+        setX(getX() + movimiento * velocidad * delta);
+    }
+
 }

@@ -2,65 +2,50 @@ package com.andromeda.actores;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class ActJugador extends ActorBase {
 
-    private float velocidad;
-    private ActBala bala;
+    private static final short LIMITE_DERECHO = (short) Gdx.graphics.getWidth();
+    private static final byte MARGEN_ERROR = 5;
+    private int vidas = 1;
+    //EFECTO DE SONIDO DISPARO EXPLOSION
 
-    public ActJugador(Sprite sprite, float x, float y, float ancho, float alto, float velocidad, ActBala bala) {
-        super(sprite, x, y, ancho, alto);
-        this.velocidad = velocidad;
-        this.bala = bala;
-    }
-
-    public void setVelocidad(float velocidad) {
-        this.velocidad = velocidad;
-    }
-
-    public float getVelocidad(){
-        return this.velocidad;
+    public ActJugador(Sprite sprite, float x, float y, float ancho, float alto, short velocidad) {
+        super(sprite, x, y, ancho, alto, velocidad);
     }
 
     @Override
     public void act(float delta) {
-        if(Gdx.input.isKeyPressed(Input.Keys.A)||Gdx.input.isKeyPressed(Input.Keys.LEFT)) moverIzquierda(delta);
+        //TRASLADAR A UN CONTROLADOR
+        if(Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) moverIzquierda(delta);
         if(Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) moverDerecha(delta);
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && !bala.enPantalla()) bala.setPosition(getX() + getWidth()/2 - bala.getWidth()/2, getY());
-        bala.mover(delta);
     }
 
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        super.draw(batch, parentAlpha);
-        bala.draw(batch, parentAlpha);
+    private boolean dentroLimiteIzquierdo() {
+        return getX() > MARGEN_ERROR;
     }
 
-    private boolean pasoLimiteIzquierdo() {
-        return getX() <= 5;
+    private boolean dentroLimiteDerecho() {
+        return getX() + getWidth() < LIMITE_DERECHO - MARGEN_ERROR;
     }
 
     public void moverIzquierda(float delta) {
-        if (!pasoLimiteIzquierdo())
+        if (dentroLimiteIzquierdo())
             setX(getX() - delta * velocidad);
     }
 
-    private boolean pasoLimiteDerecho() {
-        return getX() + getWidth() > Gdx.graphics.getWidth() -5;
-    }
-
     public void moverDerecha(float delta) {
-        if (!pasoLimiteDerecho())
+        if (dentroLimiteDerecho())
             setX(getX() + delta * velocidad);
     }
 
-    public ActBala getBala() {
-        return bala;
+    public void setVidas(int vidas) {
+        this.vidas = vidas;
     }
 
-    public void setBala(ActBala bala) {
-        this.bala = bala;
+    public boolean isDead(){
+        return vidas == 0;
     }
 }

@@ -8,13 +8,16 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public abstract class ActorBase extends Actor {
 
+    //REDUCIR LAS VARIABLES
     protected Sprite sprite;
+    protected short velocidad;
 
-    public ActorBase(Sprite sprite, float x, float y, float ancho, float alto){
+    public ActorBase(Sprite sprite, float x, float y, float ancho, float alto, short velocidad){
         setPosition(x, y);
         setSize(ancho, alto);
         sprite.setSize(ancho, alto);
         sprite.setPosition(x, y);
+        this.velocidad = velocidad;
         this.sprite = new Sprite(sprite);
     }
 
@@ -24,6 +27,14 @@ public abstract class ActorBase extends Actor {
 
     public void setSprite(Sprite sprite){
         this.sprite = sprite;
+    }
+
+    public float getVelocidad(){
+        return this.velocidad;
+    }
+
+    public void setVelocidad(short velocidad) {
+        this.velocidad = velocidad;
     }
 
     @Override

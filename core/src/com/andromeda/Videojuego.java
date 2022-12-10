@@ -9,11 +9,13 @@ public class Videojuego extends Game {
 	public PantallaInicio pantallaInicio;
 	public PantallaJuego pantallaJuego;
 
+	//USAR UN "RESOURCE MANAGER"
+
 	@Override
 	public void create(){
 		pantallaInicio = new PantallaInicio(this);
 		pantallaJuego = new PantallaJuego(this);
 
-		setScreen(pantallaJuego);
+		setScreen(pantallaInicio);
 	}
 }
