@@ -109,11 +109,18 @@ public class ActorAJugador extends ActorAnimado {
 	}
 	
 	public void descontarVida() {
-		vidas--;
+		vidas = getVidas() - 1;
 	}
 	
 	public boolean muerto() {
-		if (vidas == 0) return true;
+		if (getVidas() == 0) return true;
 		return false;
+	}
+
+	/**
+	 * @return the vidas
+	 */
+	public int getVidas() {
+		return vidas;
 	}
 }

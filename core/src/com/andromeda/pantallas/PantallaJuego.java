@@ -32,8 +32,9 @@ public class PantallaJuego extends PantallaBase {
 	private Controlador controlador;
 	private Colmena aliens;
 	private ActorBala balaAlien;
-	int alienRandom;
+	private int alienRandom;
 	private boolean derrota;
+	private AtlasRegion vida;
 	
 	/**
 	 * Constructor heredado.
@@ -61,8 +62,11 @@ public class PantallaJuego extends PantallaBase {
 		
 		Utils.actPantalla(Color.BLACK);
 		
+		actualizarVidas();
+		
 		batch.begin();
 			batch.draw(fondo, 0, 0, Const.WIDTH, Const.HEIGHT);
+			batch.draw(vida, 0, 0,128, 32);
 		batch.end();
 		
 		stage.act();
@@ -74,6 +78,13 @@ public class PantallaJuego extends PantallaBase {
 		stage.draw();
 	}
 	
+	private void actualizarVidas() {
+		// TODO Auto-generated method stub
+		vida = main.getAtlas().findRegion("vidaA");
+		if(jugador.getVidas() == 2) vida = main.getAtlas().findRegion("vidaB");
+		else if(jugador.getVidas() == 1) vida = main.getAtlas().findRegion("vidaC");
+	}
+
 	private void comprobarFinJuego() {
 		// TODO Auto-generated method stub
 		if (this.derrota) {
@@ -117,6 +128,7 @@ public class PantallaJuego extends PantallaBase {
 		
 		//Inicializa los aliens
 		aliens = new Colmena(64, 200, 4, 10, 32, 100, 10, main.getAtlas());
+		
 	}
 
 	private void agregarActoresEscenario() {

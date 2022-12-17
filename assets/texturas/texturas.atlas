@@ -6,176 +6,197 @@ filter: Nearest, Nearest
 repeat: none
 alienA
   rotate: false
-  xy: 260, 2
+  xy: 260, 69
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 2
 alienA
   rotate: false
-  xy: 1034, 260
+  xy: 1034, 327
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 1
 alienB
   rotate: false
-  xy: 1542, 1446
+  xy: 1542, 1513
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 2
 alienB
   rotate: false
-  xy: 1542, 672
+  xy: 1542, 739
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 1
 alienC
   rotate: false
-  xy: 1284, 1188
+  xy: 1284, 1255
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 2
 alienC
   rotate: false
-  xy: 1542, 930
+  xy: 1542, 997
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 1
 alienD
   rotate: false
-  xy: 1542, 1704
+  xy: 1542, 1771
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 2
 alienD
   rotate: false
-  xy: 518, 2
+  xy: 518, 69
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 1
 alienE
   rotate: false
-  xy: 1284, 1446
+  xy: 1284, 1513
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 2
 alienE
   rotate: false
-  xy: 1542, 1188
+  xy: 1542, 1255
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 1
 alienF
   rotate: false
-  xy: 1284, 1704
+  xy: 1284, 1771
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 2
 alienF
   rotate: false
-  xy: 518, 260
+  xy: 518, 327
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 1
 balaAlien
   rotate: false
-  xy: 1800, 1704
-  size: 128, 256
+  xy: 1800, 1747
+  size: 152, 280
   orig: 152, 280
-  offset: 12, 12
+  offset: 0, 0
   index: 2
 balaAlien
   rotate: false
-  xy: 1800, 1446
-  size: 128, 256
+  xy: 1800, 1465
+  size: 152, 280
   orig: 152, 280
-  offset: 12, 12
+  offset: 0, 0
   index: 1
 balaJugador
   rotate: false
-  xy: 1034, 2
+  xy: 1034, 69
   size: 128, 256
   orig: 128, 256
   offset: 0, 0
   index: 2
 balaJugador
   rotate: false
-  xy: 1800, 1188
+  xy: 1800, 1207
   size: 128, 256
   orig: 128, 256
   offset: 0, 0
   index: 1
 explocion
   rotate: false
-  xy: 2, 2
+  xy: 2, 69
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 2
 explocion
   rotate: false
-  xy: 776, 260
+  xy: 776, 327
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 1
 fondo
   rotate: false
-  xy: 2, 518
+  xy: 2, 585
   size: 1280, 720
   orig: 1280, 720
   offset: 0, 0
   index: -1
 fondoD
   rotate: false
-  xy: 2, 1240
+  xy: 2, 1307
   size: 1280, 720
   orig: 1280, 720
   offset: 0, 0
   index: -1
 obstaculo
   rotate: false
-  xy: 2, 260
+  xy: 2, 327
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 2
 obstaculo
   rotate: false
-  xy: 1284, 930
+  xy: 1284, 997
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 1
 obstaculo
   rotate: false
-  xy: 776, 2
+  xy: 776, 69
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 3
 player
   rotate: false
-  xy: 260, 260
+  xy: 260, 327
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 2
 player
   rotate: false
-  xy: 1284, 672
+  xy: 1284, 739
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 1
+vidaA
+  rotate: false
+  xy: 2, 2
+  size: 206, 65
+  orig: 206, 65
+  offset: 0, 0
+  index: -1
+vidaB
+  rotate: false
+  xy: 210, 3
+  size: 206, 64
+  orig: 206, 64
+  offset: 0, 0
+  index: -1
+vidaC
+  rotate: false
+  xy: 1284, 673
+  size: 206, 64
+  orig: 206, 64
+  offset: 0, 0
+  index: -1
