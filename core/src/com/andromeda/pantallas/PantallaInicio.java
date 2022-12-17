@@ -1,75 +1,93 @@
+/**
+ * 
+ */
 package com.andromeda.pantallas;
 
-import com.andromeda.controladores.ControlIni;
-import com.andromeda.Videojuego;
+import com.andromeda.Utilidades.*;
+
+import java.awt.font.ImageGraphicAttribute;
+
+import com.andromeda.VideojuegoMain;
+import com.andromeda.Utilidades.Utils;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.ai.fsm.State;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.TextureData.TextureDataType;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.AddAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Scaling;
 
-public class PantallaInicio extends PantallaBase{
-
-    private Texture textura;
-    private Stage escenario;
-    private ControlIni controlIni;
-    /*
-    private Skin skin;
-    private TextButton botonInicio;
-     */
-
-    public PantallaInicio(final Videojuego videojuego) {
-        super(videojuego);
-
-        textura = new Texture("pantallaInicio.png");
-        escenario = new Stage();
-        Image image = new Image(textura);
-        controlIni = new ControlIni(videojuego);
-        /*
-        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-        botonInicio = new TextButton("Iniciar", skin);
-        botonInicio.addCaptureListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                videojuego.setScreen(videojuego.pantallaJuego);
-            }
-        });
-         */
-
-        image.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        image.setPosition(0,0);
-        escenario.addActor(image);
-
-        /*
-        botonInicio.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getWidth()/16);
-        botonInicio.setPosition(Gdx.graphics.getWidth()/2 - botonInicio.getWidth()/2, 0);
-        escenario.addActor(botonInicio);
-         */
-    }
-
-    @Override
+/**
+ * @author O. Javier Hidalgo R.
+ *
+ */
+public class PantallaInicio extends PantallaBase {
+	
+	Texture img;
+	Stage stage;
+	
+	public PantallaInicio(VideojuegoMain main) {
+		super(main);
+		// TODO Auto-generated constructor stub
+	}
+ 
+	@Override
     public void show() {
-        Gdx.input.setInputProcessor(controlIni);
-    }
-
-    @Override
-    public void hide() {
-        Gdx.input.setInputProcessor(null);
-        escenario.dispose();
-    }
-
-    @Override
-    public void dispose() {
-        textura.dispose();
-        escenario.dispose();
+        img = new Texture("pantallaInicial.png");
+        
+        img.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        
+        Image image = new Image(img);
+        
+        //ajusta el tamaño del padre
+        image.setFillParent(true);
+        
+        //escala la imagen en Y
+        image.setScaling(Scaling.fillY);
+        
+        stage = new Stage();
+        
+        stage.addActor(image);
+        
+        stage.addAction(Actions.sequence(Actions.alpha(0.0F), Actions.fadeIn(0.7F), Actions.delay(0.5F), Actions.fadeOut(0.5F), Actions.run(new Runnable() {
+			
+			@Override
+			public void run() {
+				main.setScreen(main.pantallaCarga);
+			}
+		})));
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0/255f,0/255f,0/255f,255/255f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Utils.actPantalla(Color.WHITE);
 
-        escenario.act();
-        escenario.draw();
+        stage.act();
+        
+        stage.draw();
+    }
+
+    @Override
+    public void hide() {
+    	stage.dispose();
+    }
+    
+    @Override
+    public void dispose() {
+        img.dispose();
+        stage.dispose();
     }
 }

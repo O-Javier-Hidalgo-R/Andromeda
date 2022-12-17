@@ -1,0 +1,181 @@
+
+texturas.png
+size: 2048, 2048
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+alienA
+  rotate: false
+  xy: 260, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 2
+alienA
+  rotate: false
+  xy: 1034, 260
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 1
+alienB
+  rotate: false
+  xy: 1542, 1446
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 2
+alienB
+  rotate: false
+  xy: 1542, 672
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 1
+alienC
+  rotate: false
+  xy: 1284, 1188
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 2
+alienC
+  rotate: false
+  xy: 1542, 930
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 1
+alienD
+  rotate: false
+  xy: 1542, 1704
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 2
+alienD
+  rotate: false
+  xy: 518, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 1
+alienE
+  rotate: false
+  xy: 1284, 1446
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 2
+alienE
+  rotate: false
+  xy: 1542, 1188
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 1
+alienF
+  rotate: false
+  xy: 1284, 1704
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 2
+alienF
+  rotate: false
+  xy: 518, 260
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 1
+balaAlien
+  rotate: false
+  xy: 1800, 1704
+  size: 128, 256
+  orig: 152, 280
+  offset: 12, 12
+  index: 2
+balaAlien
+  rotate: false
+  xy: 1800, 1446
+  size: 128, 256
+  orig: 152, 280
+  offset: 12, 12
+  index: 1
+balaJugador
+  rotate: false
+  xy: 1034, 2
+  size: 128, 256
+  orig: 128, 256
+  offset: 0, 0
+  index: 2
+balaJugador
+  rotate: false
+  xy: 1800, 1188
+  size: 128, 256
+  orig: 128, 256
+  offset: 0, 0
+  index: 1
+explocion
+  rotate: false
+  xy: 2, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 2
+explocion
+  rotate: false
+  xy: 776, 260
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 1
+fondo
+  rotate: false
+  xy: 2, 518
+  size: 1280, 720
+  orig: 1280, 720
+  offset: 0, 0
+  index: -1
+fondoD
+  rotate: false
+  xy: 2, 1240
+  size: 1280, 720
+  orig: 1280, 720
+  offset: 0, 0
+  index: -1
+obstaculo
+  rotate: false
+  xy: 2, 260
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 2
+obstaculo
+  rotate: false
+  xy: 1284, 930
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 1
+obstaculo
+  rotate: false
+  xy: 776, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 3
+player
+  rotate: false
+  xy: 260, 260
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 2
+player
+  rotate: false
+  xy: 1284, 672
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 1

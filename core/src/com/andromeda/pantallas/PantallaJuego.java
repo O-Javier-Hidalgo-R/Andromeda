@@ -1,153 +1,238 @@
+/**
+ * 
+ */
 package com.andromeda.pantallas;
 
-import com.andromeda.Videojuego;
-import com.andromeda.actores.ActAlien;
-import com.andromeda.actores.ActBala;
-import com.andromeda.actores.ActJugador;
+import com.andromeda.VideojuegoMain;
+import com.andromeda.Utilidades.*;
+import com.andromeda.actores.ActorAJugador;
+import com.andromeda.actores.ActorBala;
+import com.andromeda.actores.Colmena;
+import com.andromeda.controlador.Controlador;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
-public class PantallaJuego extends PantallaBase{
+/**
+ * Clase heredada de pantallaBase en la que se ejecuta el videojuego.
+ * @author O. Javier Hidalgo R.
+ *
+ */
+public class PantallaJuego extends PantallaBase {
+	
+	private Stage stage;
+	private ActorAJugador jugador;
+	private ActorBala balaJugador;
+	private AtlasRegion fondo;
+	private Controlador controlador;
+	private Colmena aliens;
+	private ActorBala balaAlien;
+	int alienRandom;
+	private boolean derrota;
+	
+	/**
+	 * Constructor heredado.
+	 * @param main clase principal.
+	 */
+	public PantallaJuego(VideojuegoMain main) {
+		super(main);
+	}
+	
+	@Override
+	public void show() {
+		
+		//Paso el control al input procesor
+		controlador = new Controlador(this);
+		Gdx.input.setInputProcessor(controlador);
+		
+		inicializaActores();
+		
+		agregarActoresEscenario();
+	}
+	
 
-    private static final TextureAtlas atlas = new TextureAtlas("spritesJuego.atlas");
-    private static final float TAMAÑO_DEFAULT = 32;
-    private static final float MAXIMO_ALIENS_FILA = 8;
-    private static final float DISTANCIA = 100; // Distancia en el eje x donde se van colocando los aliens.
-    private static final float ALTURA = Gdx.graphics.getHeight() - 50; // Distancia en el eje y donde empiezan los aliens.
-    private static final float MARGEN_IZQUIERDO = 0; // Limite de los aliens a la izquierda.
-    private static final float MARGEN_DERECHO = Gdx.graphics.getWidth()+40; // Limite de los aliens a la derecha.
-    private static final short VELOCIDAD_DEFAULT = 400;
+	@Override
+	public void render(float delta) {
+		
+		Utils.actPantalla(Color.BLACK);
+		
+		batch.begin();
+			batch.draw(fondo, 0, 0, Const.WIDTH, Const.HEIGHT);
+		batch.end();
+		
+		stage.act();
+		
+		operacionesDelEscenario();
+		
+		comprobarFinJuego();
+		
+		stage.draw();
+	}
+	
+	private void comprobarFinJuego() {
+		// TODO Auto-generated method stub
+		if (this.derrota) {
+			
+			main.setScreen(main.pantallaDerrota);
+		}
+	}
 
-    private ActJugador jugador;
-    private ActBala balaJugador;
-    private Stage escenario;
-    private Group groupAliens;
+	@Override
+	public void dispose() {
+		
+		stage.dispose();
+		
+	}
+	
+	@Override
+	public void hide() {
+		stage.dispose();
+		Gdx.input.setInputProcessor(null);
+	}
+	
+	private void inicializaActores() {
+		
+		this.derrota = false;
+		
+		//Creo el escenario principal
+		stage = new Stage();
+		stage.setDebugAll(true);
+				
+		//Coloco la textura del fondo desde el administrador de archivos
+		fondo = main.getManager().get("texturas/texturas.atlas", TextureAtlas.class).findRegion("fondo");
+				
+		//Inicializo el actor del jugador con un constructor parametrizado
+		setJugador(new ActorAJugador((Const.WIDTH - 32)/2F, 50F, 32F, 32F, 250F, 0.2F, main.getAtlas().findRegions("player")));
 
-    public PantallaJuego(Videojuego videojuego) {
-        super(videojuego);
-    }
+		//Inicializo el actor de la bala con un constructor parametrizado
+		setBalaJugador(new ActorBala(Const.WIDTH, Const.HEIGHT, 8F, 32F, 300F, main.getManager().get("sonidos/disparoJugador.wav", Sound.class), 0.5F,main.getAtlas().findRegions("balaJugador")));
+				
+		//Inicializa el actor que se usara para la bala de los aliesn
+		balaAlien = new ActorBala(Const.WIDTH, Const.HEIGHT, 8F, 32F, -300F, main.getManager().get("sonidos/disparoAlien.wav", Sound.class), 0.5F,main.getAtlas().findRegions("balaAlien"));
+		
+		//Inicializa los aliens
+		aliens = new Colmena(64, 200, 4, 10, 32, 100, 10, main.getAtlas());
+	}
 
-    @Override
-    public void show() {
-        jugador = new ActJugador(atlas.createSprite("jugador"),  Gdx.graphics.getWidth()/2 - 16,0,TAMAÑO_DEFAULT,TAMAÑO_DEFAULT, VELOCIDAD_DEFAULT);
-        balaJugador = new ActBala(atlas.createSprite("balajugador"), 0, Gdx.graphics.getHeight(), TAMAÑO_DEFAULT/4, TAMAÑO_DEFAULT, (short) (VELOCIDAD_DEFAULT*2));
-        groupAliens = new Group();
-        escenario = new Stage();
-        crearAliens();
-        escenario.addActor(groupAliens);
-        escenario.addActor(jugador);
-        escenario.addActor(balaJugador);
-    }
+	private void agregarActoresEscenario() {
+		
+		stage.addActor(getBalaJugador());
+		stage.addActor(getJugador());
+		stage.addActor(balaAlien);
+		stage.addActor(aliens);
+	}
+	
+	private void operacionesDelEscenario() {
+	
+		alienRandomDispara();
+		
+		aliensGanan();
+		
+		condicionesPorcadaAlien();
+		
+		verificaNuevaColmena();
+	}
 
-    private void crearAliens() {
-        float altura = ALTURA;
+	private void verificaNuevaColmena() {
+		
+		if(aliens.getChildren().isEmpty()) {
+			
+			aliens.remove();
+			aliens = new Colmena(64, 200, 4, 10, 32, 100, 10, main.getAtlas());
+			stage.addActor(aliens);
+		}
+	}
 
-        posicionarAliens(escenario, atlas.createSprite("alienA1"), altura);
-        altura = recalcularAltura(altura);
+	private void condicionesPorcadaAlien() {
+		
+		float xm = Const.WIDTH;
+		float ym = Const.HEIGHT;
+		float xM = 0;
+		
+		for (Actor alien : aliens.getChildren()) {
+			
+			Rectangle alienRectangle = new Rectangle(alien.getX() + aliens.getX(), alien.getY() + aliens.getY(), alien.getWidth(), alien.getHeight());
+			
+			if (xm > alien.getX()) xm = alien.getX();
+			if (ym > alien.getY()) ym = alien.getY();
+			if (xM < alien.getRight()) xM = alien.getRight();
+			
+			if (alienRectangle.overlaps(getBalaJugador().getBoundRectangle())){
+				
+				alien.remove();
+				getBalaJugador().desaparecer();
+				main.getManager().get("sonidos/explosion.wav", Sound.class).play();
+			}
+			
+			if (alienRectangle.overlaps(getJugador().getBoundRectangle())){
+				
+				//si alguno de los aliens chocaron con el jugador
+				this.derrota = true;
+			}
+			
+		}
+		
+		aliens.setLimiteIzquierdo(xm);
+		aliens.setLimiteInferior(ym);
+		aliens.setLimiteDerecho(xM);;
+	}
 
-        posicionarAliens(escenario, atlas.createSprite("alienB1"), altura);
-        altura = recalcularAltura(altura);
+	private void aliensGanan() {
+		
+		if(aliens.getY() < 0 - aliens.getLimiteInferior()) this.derrota = true;;
+		
+		if(balaAlien.getBoundRectangle().overlaps(getJugador().getBoundRectangle())) { 
+			
+			balaAlien.desaparecer();
+			main.getManager().get("sonidos/explosion.wav", Sound.class).play(); 
+			getJugador().descontarVida();
+			if(getJugador().muerto()) this.derrota = true;;
+		}
+	}
 
-        posicionarAliens(escenario, atlas.createSprite("alienC1"), altura);
-        altura = recalcularAltura(altura);
+	private void alienRandomDispara() {
+		
+		alienRandom = (int)(Math.random() * aliens.getChildren().size);
+		
+		Actor alien1 = aliens.getChild(alienRandom);
+			
+		balaAlien.colocar(alien1.getX() + alien1.getWidth()/2 + aliens.getX(), alien1.getY() + aliens.getY());
+	}
 
-        posicionarAliens(escenario, atlas.createSprite("alienD1"), altura);
+	/**
+	 * Permite mostrar el jugador.
+	 * @return the jugador controlado por el usuario.
+	 */
+	public ActorAJugador getJugador() {
+		return jugador;
+	}
 
-    }
+	/**
+	 * Permite cambiar el jugador por parametros.
+	 * @param jugador the jugador to set
+	 */
+	private void setJugador(ActorAJugador jugador) {
+		this.jugador = jugador;
+	}
 
-    private float recalcularAltura(float altura) {
-        return altura - TAMAÑO_DEFAULT -5;
-    }
+	/**
+	 * muestra la bala del jugador
+	 * @return the balaJugador
+	 */
+	public ActorBala getBalaJugador() {
+		return balaJugador;
+	}
 
-    private void posicionarAliens(Stage stage, Sprite sprite, float altura) {
-        float distancia = DISTANCIA;
-        float limiteDerecha = MARGEN_DERECHO - ((TAMAÑO_DEFAULT + 5) * MAXIMO_ALIENS_FILA);
-        float limiteIzquierda = MARGEN_IZQUIERDO;
-        for(int i = 0; i < MAXIMO_ALIENS_FILA ; i++) {
-            groupAliens.addActor(new ActAlien(sprite, distancia, altura, TAMAÑO_DEFAULT, TAMAÑO_DEFAULT,limiteIzquierda, limiteDerecha, (short) (VELOCIDAD_DEFAULT/2)));
-            distancia = distancia + TAMAÑO_DEFAULT + 5;
-            limiteDerecha = limiteDerecha + TAMAÑO_DEFAULT + 5;
-            limiteIzquierda = limiteIzquierda + TAMAÑO_DEFAULT + 5;
-        }
-    }
-
-    @Override
-    public void hide() {
-        escenario.dispose();
-    }
-
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClearColor(0/255f,0/255f,0/255f,255/255f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        escenario.act();
-
-        //TRASLADAR AL CONTROLADOR
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) dispararPlayer();
-
-        comprobarImpactosBalas();
-
-        comprobarFinJuego();
-        comprobarFinJuego1();
-
-        compobarGanador();
-
-        escenario.draw();
-    }
-
-    private void comprobarFinJuego1() {
-        boolean touchable = false;
-        Actor impactado = groupAliens.hit(jugador.getX(), jugador.getY() + jugador.getHeight(), touchable);
-        if(impactado != null){
-            jugador.remove();
-        }
-    }
-
-    private void compobarGanador() {
-        if(groupAliens.getChildren().isEmpty()){
-            //COLOCAR PANTALLA DE GANADOR
-            System.out.println("USTED GANA");
-        }
-    }
-
-    private void comprobarFinJuego() {
-        for (Actor alien: groupAliens.getChildren()) {
-            if(alien.getY() < 0){
-                //COLOCAR PANTALLA DE PERDEDOR (OPCION DE VOLVER A INTENTAR)
-                System.out.println("GAME OVER");
-            }
-        }
-    }
-
-    public void dispararPlayer() {
-        if (!balaJugador.enPantalla()){
-            balaJugador.setY(jugador.getY());
-            balaJugador.setX(jugador.getX() + (jugador.getWidth()/2 - balaJugador.getWidth()/2));
-        }
-    }
-
-    private void comprobarImpactosBalas(){
-        boolean touchable = false;
-        Actor alienImpactado = groupAliens.hit(balaJugador.getX(), balaJugador.getY(), touchable);
-        if(alienImpactado != null){
-            alienImpactado.remove();
-            balaJugador.desaparecer();
-        }
-    }
-
-    @Override
-    public void dispose() {
-        jugador.clear();
-        escenario.dispose();
-        groupAliens.clear();
-        balaJugador.clear();
-    }
-
+	/**
+	 * permite cambiar los valores de la bala por parametro
+	 * @param balaJugador the balaJugador to set
+	 */
+	private void setBalaJugador(ActorBala balaJugador) {
+		this.balaJugador = balaJugador;
+	}
 }
