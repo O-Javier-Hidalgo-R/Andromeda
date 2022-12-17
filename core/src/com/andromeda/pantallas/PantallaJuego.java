@@ -35,7 +35,8 @@ public class PantallaJuego extends PantallaBase {
 	private int alienRandom;
 	private boolean derrota;
 	private AtlasRegion vida;
-	
+	private int marcadorDePuntos;
+
 	/**
 	 * Constructor heredado.
 	 * @param main clase principal.
@@ -59,38 +60,20 @@ public class PantallaJuego extends PantallaBase {
 
 	@Override
 	public void render(float delta) {
-		
-		Utils.actPantalla(Color.BLACK);
-		
-		actualizarVidas();
-		
-		batch.begin();
-			batch.draw(fondo, 0, 0, Const.WIDTH, Const.HEIGHT);
-			batch.draw(vida, 0, 0,128, 32);
-		batch.end();
-		
-		stage.act();
-		
-		operacionesDelEscenario();
-		
-		comprobarFinJuego();
-		
-		stage.draw();
-	}
-	
-	private void actualizarVidas() {
-		// TODO Auto-generated method stub
-		vida = main.getAtlas().findRegion("vidaA");
-		if(jugador.getVidas() == 2) vida = main.getAtlas().findRegion("vidaB");
-		else if(jugador.getVidas() == 1) vida = main.getAtlas().findRegion("vidaC");
-	}
 
-	private void comprobarFinJuego() {
-		// TODO Auto-generated method stub
-		if (this.derrota) {
-			
-			main.setScreen(main.pantallaDerrota);
-		}
+		Utils.actPantalla(Color.BLACK);
+
+		batch.begin();
+		batch.draw(fondo, 0, 0, Const.WIDTH, Const.HEIGHT);
+		batch.draw(vida, 0, 0, 128, 32);
+		main.getFont().draw(batch, "PUNTAJE: " + Integer.toString(marcadorDePuntos), Const.WIDTH / 2, 30);
+		batch.end();
+
+		stage.act();
+
+		operacionesDelEscenario();
+
+		stage.draw();
 	}
 
 	@Override
@@ -109,7 +92,9 @@ public class PantallaJuego extends PantallaBase {
 	private void inicializaActores() {
 		
 		this.derrota = false;
-		
+
+		this.marcadorDePuntos = 0;
+
 		//Creo el escenario principal
 		stage = new Stage();
 		stage.setDebugAll(true);
@@ -128,7 +113,9 @@ public class PantallaJuego extends PantallaBase {
 		
 		//Inicializa los aliens
 		aliens = new Colmena(64, 200, 4, 10, 32, 100, 10, main.getAtlas());
-		
+
+		//Inicializa la textura de la vidas
+		vida = main.getAtlas().findRegion("vidaA");
 	}
 
 	private void agregarActoresEscenario() {
@@ -141,6 +128,10 @@ public class PantallaJuego extends PantallaBase {
 	
 	private void operacionesDelEscenario() {
 	
+		actualizarVidas();
+
+		comprobarFinJuego();
+
 		alienRandomDispara();
 		
 		aliensGanan();
@@ -148,6 +139,21 @@ public class PantallaJuego extends PantallaBase {
 		condicionesPorcadaAlien();
 		
 		verificaNuevaColmena();
+	}
+
+	private void actualizarVidas() {
+		// TODO Auto-generated method stub
+		vida = main.getAtlas().findRegion("vidaA");
+		if(jugador.getVidas() == 2) vida = main.getAtlas().findRegion("vidaB");
+		else if(jugador.getVidas() == 1) vida = main.getAtlas().findRegion("vidaC");
+	}
+
+	private void comprobarFinJuego() {
+		// TODO Auto-generated method stub
+		if (this.derrota) {
+
+			main.setScreen(main.pantallaDerrota);
+		}
 	}
 
 	private void verificaNuevaColmena() {
@@ -179,6 +185,7 @@ public class PantallaJuego extends PantallaBase {
 				alien.remove();
 				getBalaJugador().desaparecer();
 				main.getManager().get("sonidos/explosion.wav", Sound.class).play();
+				marcadorDePuntos += 10;
 			}
 			
 			if (alienRectangle.overlaps(getJugador().getBoundRectangle())){
@@ -196,14 +203,14 @@ public class PantallaJuego extends PantallaBase {
 
 	private void aliensGanan() {
 		
-		if(aliens.getY() < 0 - aliens.getLimiteInferior()) this.derrota = true;;
+		if(aliens.getY() < 0 - aliens.getLimiteInferior()) this.derrota = true;
 		
 		if(balaAlien.getBoundRectangle().overlaps(getJugador().getBoundRectangle())) { 
 			
 			balaAlien.desaparecer();
 			main.getManager().get("sonidos/explosion.wav", Sound.class).play(); 
 			getJugador().descontarVida();
-			if(getJugador().muerto()) this.derrota = true;;
+			if(getJugador().muerto()) this.derrota = true;
 		}
 	}
 

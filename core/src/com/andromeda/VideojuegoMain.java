@@ -2,8 +2,10 @@ package com.andromeda;
 
 import com.andromeda.pantallas.*;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
@@ -18,7 +20,8 @@ public class VideojuegoMain extends Game {
 	
 	private AssetManager manager;
 	private SpriteBatch batch;
-	
+	private BitmapFont font;
+
 	@Override
 	public void create() {
 		iniManager();
@@ -26,6 +29,7 @@ public class VideojuegoMain extends Game {
 		pantallaInicio = new PantallaInicio(this);
 		pantallaCarga = new PantallaCarga(this);
 		setScreen(pantallaInicio);
+		this.setFont(new BitmapFont(Gdx.files.internal("arial.fnt"), Gdx.files.internal("arial.png"), false));
 	}
 
 	@Override
@@ -63,5 +67,12 @@ public class VideojuegoMain extends Game {
 	public void setBatch(SpriteBatch batch) { this.batch = batch;}
 	
 	public TextureAtlas getAtlas() { return manager.get("texturas/texturas.atlas", TextureAtlas.class); }
-	
+
+	public BitmapFont getFont() {
+		return font;
+	}
+
+	private void setFont(BitmapFont font) {
+		this.font = font;
+	}
 }
